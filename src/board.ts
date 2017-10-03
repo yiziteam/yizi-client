@@ -1,28 +1,20 @@
-import { random, merge } from "lodash"
+import {random, merge} from "lodash"
 import Sprite = Laya.Sprite
-import Text = Laya.Text
+import FreeDraw from './board/FreeDraw.ts'
 
 export default class Board {
-  private container: Sprite
-  private socket: any
   private $dom: any
-  // private $canvas: any
   private $layaContainer: any
   private domId: string
   private domWidth: number
   private domHeight: number
 
+  private container: Sprite
+  private freeDraw: FreeDraw
+
   constructor(domId: string) {
     this.initDom(domId)
-    this.drawTxt('Hello layabox', {
-      color: '#FF0000',
-      fontSize: 66,
-      stroke: 5,
-      strokeColor: '#fff',
-      bold: true,
-      x: 60,
-      y: 100
-    })
+    this.initLayer()
   }
 
   private initDom(domId: string): void {
@@ -36,32 +28,15 @@ export default class Board {
     this.$dom.append(this.$layaContainer)
   }
 
-  public drawTxt(text: string, style: any): void {
-    var txt = new Text()
-    var x = style.x
-    var y = style.y
+  private initLayer():void {
+    this.container = new Sprite();
+    Laya.stage.addChild(this.container);
 
-    delete style.x
-    delete style.y
-
-    merge(txt, style, {text})
-
-    txt.pos(x, y)
-
-    Laya.stage.bgColor = '#23238E'
-    Laya.stage.addChild(txt)
+    console.log('FreeDraw', FreeDraw);
+    this.freeDraw = new FreeDraw()
+    this.container.addChild(this.freeDraw)
   }
 
-  private initDraw(): void {
-   this.container = new Sprite();
-   Laya.stage.addChild(this.container);
-
-
-   var sp = new Sprite();
-   //画圆
-   sp.graphics.drawCircle(80, 80, random(0, 300), "#ff0000");
-   this.container.addChild(sp);
-  }
 }
 
 window.Board = Board
