@@ -32,7 +32,6 @@ export default class Board {
     this.container = new Sprite();
     Laya.stage.addChild(this.container);
 
-    console.log('FreeDraw', FreeDraw);
     this.freeDraw = new FreeDraw()
     this.container.addChild(this.freeDraw)
   }
