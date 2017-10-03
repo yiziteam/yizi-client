@@ -1,6 +1,6 @@
 import {random, merge} from "lodash"
 import Sprite = Laya.Sprite
-import FreeDraw from './board/FreeDraw.ts'
+import FreeDraw from '@/board/FreeDraw'
 
 export default class Board {
   private $dom: any
@@ -25,6 +25,8 @@ export default class Board {
 
     Laya.init(this.domWidth, this.domHeight)
     this.$layaContainer = document.querySelector('#layaContainer')
+    this.$layaContainer.style.width = this.domWidth + 'px'
+    this.$layaContainer.style.height = this.domHeight + 'px'
     this.$dom.append(this.$layaContainer)
   }
 
