@@ -1,6 +1,7 @@
 import {random, merge} from "lodash"
 import Sprite = Laya.Sprite
-import FreeDraw from '@/board/FreeDraw'
+import Stage = Laya.Stage
+import FreeDraw from './board/FreeDraw'
 
 export default class Board {
   private $dom: any
@@ -33,9 +34,13 @@ export default class Board {
   private initLayer():void {
     this.container = new Sprite();
     Laya.stage.addChild(this.container);
+    // Laya.stage.alignV = Stage.ALIGN_MIDDLE;
+    // Laya.stage.alignH = Stage.ALIGN_CENTER;
 
-    console.log('FreeDraw', FreeDraw);
-    this.freeDraw = new FreeDraw()
+    Laya.stage.screenMode = Stage.SCREEN_NONE;
+    Laya.stage.bgColor = "#232628";
+
+    this.freeDraw = new FreeDraw(this.domWidth, this.domHeight)
     this.container.addChild(this.freeDraw)
   }
 

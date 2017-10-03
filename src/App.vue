@@ -6,7 +6,6 @@
 
 <script>
   import MyLaya from '@/components/MyLaya.vue'
-  import sokcketIo from 'socket.io-client'
 
   export default {
     name: 'app',
@@ -15,13 +14,7 @@
     },
     methods: {
       createSocket () {
-        var socket = sokcketIo('http://localhost:3000')
 
-        socket.on('board', (data) => {
-          console.log(data)
-        })
-
-        socket.emit('board', 'xiaohu')
       }
     },
     mounted () {
