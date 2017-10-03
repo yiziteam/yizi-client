@@ -58,6 +58,7 @@ module.exports = {
       "never"
     ],
     "comma-dangle": [0, "always"],
+    "no-new": 0,
     "no-console": 0,
     "no-unused-vars": [2, { "vars": "all", "args": "none" }],
     "no-mixed-spaces-and-tabs": [1, "smart-tabs"],

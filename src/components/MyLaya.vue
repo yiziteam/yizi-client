@@ -10,11 +10,10 @@
   export default {
     name: 'laya',
     data () {
-      return {
-      }
+      return {}
     },
     mounted () {
-      var board = new Board('#laya-box')
+      new Board('#laya-box')
     }
   }
 </script>
