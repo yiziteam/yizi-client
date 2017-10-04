@@ -29,12 +29,12 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false
-    //   },
-    //   sourceMap: true
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      sourceMap: false
+    }),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')
@@ -97,7 +97,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       // chunksSortMode: 'dependency'
       chunksSortMode: function (chunk1, chunk2) {
-        var order = ['layalib', 'manifest', 'vendor', 'board', 'main']
+        var order = ['lib', 'manifest', 'vendor', 'board', 'main']
         var order1 = order.indexOf(chunk1.names[0]);
         var order2 = order.indexOf(chunk2.names[0]);
         return order1 - order2; 

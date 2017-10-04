@@ -1,14 +1,17 @@
+import * as $ from 'jquery'
 import {random, merge} from "lodash"
 import Sprite = Laya.Sprite
 import Stage = Laya.Stage
 import FreeDraw from './board/FreeDraw'
+import Model from './board/Model'
+import Socket from './utils/Socket'
 
 export default class Board {
-  private $dom: any
+  private $box: any
   private $layaContainer: any
-  private domId: string
-  private domWidth: number
-  private domHeight: number
+  private boxId: string
+  private canvasWidth: number
+  private canvasHeight: number
 
   private container: Sprite
   private freeDraw: FreeDraw
@@ -18,17 +21,21 @@ export default class Board {
     this.initLayer()
   }
 
-  private initDom(domId: string): void {
-    this.domId = domId
-    this.$dom = document.querySelector(domId)
-    this.domWidth = this.$dom.clientWidth
-    this.domHeight = this.$dom.clientHeight
+  private initDom(boxId: string): void {
+    this.boxId = boxId
+    this.$box = document.querySelector(boxId)
+    this.canvasWidth = this.$box.clientWidth
+    this.canvasHeight = this.$box.clientHeight
 
-    Laya.init(this.domWidth, this.domHeight)
+    Laya.init(this.canvasWidth, this.canvasHeight)
     this.$layaContainer = document.querySelector('#layaContainer')
-    this.$layaContainer.style.width = this.domWidth + 'px'
-    this.$layaContainer.style.height = this.domHeight + 'px'
-    this.$dom.append(this.$layaContainer)
+    this.$layaContainer.style.width = this.canvasWidth + 'px'
+    this.$layaContainer.style.height = this.canvasHeight + 'px'
+    this.$box.append(this.$layaContainer)
+
+    Model.canvasWidth = this.canvasWidth
+    Model.canvasHeight = this.canvasHeight
+    Model.canvasOffset = $(this.$box).offset()
   }
 
   private initLayer():void {
@@ -40,7 +47,7 @@ export default class Board {
     Laya.stage.screenMode = Stage.SCREEN_NONE;
     Laya.stage.bgColor = "#232628";
 
-    this.freeDraw = new FreeDraw(this.domWidth, this.domHeight)
+    this.freeDraw = new FreeDraw(this.canvasWidth, this.canvasHeight)
     this.container.addChild(this.freeDraw)
   }
 

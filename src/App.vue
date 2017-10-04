@@ -6,6 +6,8 @@
 
 <script>
   import MyLaya from '@/components/MyLaya.vue'
+  import MySocket from '@/utils/Socket'
+  import Model from '@/board/Model'
 
   export default {
     name: 'app',
@@ -14,7 +16,12 @@
     },
     methods: {
       createSocket () {
+        Model.socketUrl = 'http://localhost:3000/'
 
+        MySocket.instance(Model.socketUrl)
+          .on('board', (data) => {
+            console.log(data)
+          })
       }
     },
     mounted () {

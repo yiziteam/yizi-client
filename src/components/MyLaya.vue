@@ -2,9 +2,7 @@
   <div class="laya-box" id="laya-box">
   </div>
 </template>
-
 <script>
-  // import $ from 'jquery'
   import Board from 'Board'
 
   export default {

@@ -30,7 +30,7 @@ module.exports = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       chunksSortMode: function (chunk1, chunk2) {
-        var order = ['layalib', 'manifest', 'vendor', 'board', 'main']
+        var order = ['lib', 'manifest', 'vendor', 'board', 'main']
         var order1 = order.indexOf(chunk1.names[0]);
         var order2 = order.indexOf(chunk2.names[0]);
         return order1 - order2; 

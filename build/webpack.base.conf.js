@@ -8,15 +8,16 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-var laya = [
+var lib = [
   './static/lib/laya/laya.core.js',
   './static/lib/laya/laya.webgl.js',
   './static/lib/laya/laya.ui.js',
+  // './node_modules/paper/dist/paper-full.js'
 ]
 
 module.exports = {
   entry: {
-    layalib: laya,
+    lib: lib,
     main: './src/main.ts',
     board: './src/board.ts'
   },

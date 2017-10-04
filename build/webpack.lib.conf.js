@@ -6,15 +6,16 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-var laya = [
+var lib = [
 		'./static/lib/laya/laya.core.js',
 		'./static/lib/laya/laya.webgl.js',
 		'./static/lib/laya/laya.ui.js',
+    './static/lib/paper-full.js'
 	]
 
 module.exports = {
   entry: {
-    "laya": laya
+    "lib": lib
   },
   // devtool: config.build.productionSourceMap ? '#source-map' : false,
   output: {
