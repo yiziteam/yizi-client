@@ -1,9 +1,10 @@
 import Event = Laya.Event
 import Sprite = Laya.Sprite
+// import Stage = Laya.Stage
 import { Path, Point} from 'paper'
 import Model from './Model'
 import { round as _round, flatMapDeep as _flatMapDeep, flatMap as _flatMap } from 'lodash'
-// import MySocket from '../utils/Socket'
+// import MySocket from '../../common/Socket'
 
 export default class FreeDraw extends Sprite {
   private domWidth: number
@@ -25,6 +26,7 @@ export default class FreeDraw extends Sprite {
     this.tempContainer = new Sprite()
     this.width = width
     this.height = height
+    this.name = 'freeDraw'
     this.addChild(this.tempContainer)
     this.init()
   }
@@ -38,13 +40,14 @@ export default class FreeDraw extends Sprite {
     this.on(Event.MOUSE_UP, this, this.onMouseUp)
     this.on(Event.MOUSE_OUT, this, this.onMouseUp)
     this.on(Event.MOUSE_MOVE, this, this.onMouseMove)
+    this.on('freeDraw_sp', this, this.onMessage)
   }
 
   private onMouseDown(e): void {
     this.drawing = true
 
-    this.current.x = Model.relX(e.stageX)
-    this.current.y = Model.relY(e.stageY)
+    this.current.x = e.stageX
+    this.current.y = e.stageY
 
     this.points = [[this.current.x, this.current.y]]
   }
@@ -55,8 +58,8 @@ export default class FreeDraw extends Sprite {
     }
     this.drawing = false
 
-    let newX = Model.relX(e.stageX)
-    let newY = Model.relY(e.stageY)
+    let newX = e.stageX
+    let newY = e.stageY
     this.drawALine(this.current.x, this.current.y, newX, newY, this.current.color, 2)
     this.current.x = newX
     this.current.y = newY
@@ -71,10 +74,8 @@ export default class FreeDraw extends Sprite {
     this.tempContainer.graphics.clear()
     this.drawABezierCurve(curves[0][0], curves[0][1], curves.slice(1), this.current.color)
     console.log(curves)
-    // MySocket
-    //   .getInstance(Model.getSocketUrl())
-    //   .emit('board', JSON.stringify(paperPath.segments))
-    // this.simplifyAndSendPath(this.points, 10)
+
+    this.emitMessage('bezierCurve', curves)
   }
 
   private onMouseMove(e): void {
@@ -82,14 +83,32 @@ export default class FreeDraw extends Sprite {
       return
     }
 
-    let newX = Model.relX(e.stageX)
-    let newY = Model.relY(e.stageY)
+    let newX = e.stageX
+    let newY = e.stageY
     
     this.drawALine(this.current.x, this.current.y, newX, newY, this.current.color, 2)
 
     this.current.x = newX
     this.current.y = newY
     this.points.push([newX, newY])
+  }
+
+  private onMessage({name, data}): void {
+    switch (name) {
+      case "bezierCurve":
+        this.drawABezierCurve(data[0][0], data[0][1], data.slice(1), this.current.color)
+        // code...
+        break;
+      
+      default:
+        // code...
+        break;
+    }
+  }
+
+  private emitMessage(name, data): void {
+    console.log(this)
+    this.parent.event('board_sp', {name, data})
   }
 
   private drawALine(x0, y0, x1, y1, color = this.current.color, width = 1): any {

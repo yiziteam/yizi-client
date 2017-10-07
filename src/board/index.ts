@@ -5,6 +5,11 @@ import Stage = Laya.Stage
 import FreeDraw from './modules/FreeDraw'
 import Model from './modules/Model'
 import { setup as setupPaper, DomEvent as paperDomEvent } from 'paper'
+import MySocket from '../common/Socket'
+
+interface PNode {
+  emit()
+}
 
 export default class Board {
   private $box: any
@@ -24,6 +29,7 @@ export default class Board {
     this.initDom(domId)
     this.initLayer()
     this.initEvent()
+    this.initSocket()
   }
 
   private initDom(boxId: string): void {
@@ -48,6 +54,7 @@ export default class Board {
     Laya.stage.setScreenSize(this.canvasWidth * 2, this.canvasHeight * 2)
 
     this.container = new Sprite()
+    this.container.name = 'main'
     Laya.stage.addChild(this.container)
 
     Laya.stage.alignV = Stage.ALIGN_MIDDLE
@@ -77,12 +84,46 @@ export default class Board {
     this.$paperProject = setupPaper(this.$paperCanvas.id)
   }
 
+  private initSocket():void {
+    MySocket
+      .getInstance('http://localhost:3000/')
+      .emit('board_msg', {type: 'enterRoom'})
+      .on('board_msg', (e) => {
+        var result = JSON.parse(e)
+
+        if (result.type === 'response') {
+          return console.log('socket result: ', result.code == 200 ? 'success' : 'false')
+        }
+
+        this.onReceiveMessage(result)
+      })
+  }
+
   private initEvent():void {
     Laya.stage.on("resize", this, this.onResize)
+    this.container.on('board_sp', this, this.onSendMessage)
   }
 
   private onResize():void {
     this.copyLayaCavasStyle2PaperCanvas()
+  }
+
+  private onSendMessage({name, data}):void {
+    MySocket
+      .getInstance().emit('board_msg', {name, data})
+  }
+
+  private onReceiveMessage({name, data}):void {
+    switch (name) {
+      case 'bezierCurve':
+        this.freeDraw.event('freeDraw_sp', {name, data})
+        // code...
+        break
+      
+      default:
+        // code...
+        break
+    }
   }
 
   private copyLayaCavasStyle2PaperCanvas():void {
