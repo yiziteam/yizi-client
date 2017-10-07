@@ -70,6 +70,7 @@ export default class Board {
     this.$paperCanvas.style.top = 0
     this.$paperCanvas.style.left = 0
     this.$paperCanvas.style.pointerEvents = 'none'
+    this.$paperCanvas.style.display = 'none'
     this.copyLayaCavasStyle2PaperCanvas()
 
     this.$box.appendChild(this.$paperCanvas)
