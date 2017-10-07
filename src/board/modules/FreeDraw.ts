@@ -1,9 +1,8 @@
 import Event = Laya.Event
 import Sprite = Laya.Sprite
-// import * as paper from 'paper'
-import { setup as setupPaper, Path, Point} from 'paper'
+import { Path, Point} from 'paper'
 import Model from './Model'
-import MySocket from '../utils/Socket'
+// import MySocket from '../utils/Socket'
 
 export default class FreeDraw extends Sprite {
   private domWidth: number
@@ -12,14 +11,11 @@ export default class FreeDraw extends Sprite {
   private current: any
   private drawing: boolean
 
-  private paperCanvas: any
-  // private paperPathData: Array<any>
-
   constructor(width, height) {
     super()
     console.log('我是FreeDraw')
 
-    this.current = {x: 0, y: 0, color: '#F00'}
+    this.current = {x: 0, y: 0, color: 'rgba(0,0,0,0)'}
     this.points = []
     this.width = width
     this.height = height
@@ -28,27 +24,7 @@ export default class FreeDraw extends Sprite {
   }
 
   private init(): void {
-    console.log('我是FreeDraw init')
-    // console.log(Socket.on)
-    // console.log(Socket.emit)
-    this.initPaper()
     this.addEvents()
-  }
-
-  private initPaper() {
-    // 使用paper.js工具前需先初始化容器
-    this.paperCanvas = document.createElement('canvas')
-    this.paperCanvas.id = 'paperCanvas'
-    // this.paperCanvas.position = 'absolute'
-    this.paperCanvas.width = this.width
-    this.paperCanvas.height = this.height
-    this.paperCanvas.style.position = 'absolute'
-    this.paperCanvas.style.top = 0
-    this.paperCanvas.style.left = 0
-    this.paperCanvas.style.pointerEvents = 'none'
-
-    document.body.appendChild(this.paperCanvas)
-    setupPaper(this.paperCanvas.id)
   }
 
   private addEvents(): void {
@@ -80,7 +56,7 @@ export default class FreeDraw extends Sprite {
     this.current.y = newY
     this.points.push([newX, newY])
 
-    this.simplifyAndSendPath(this.points, 30)
+    this.simplifyAndSendPath(this.points, 10)
   }
 
   private onMouseMove(e): void {
@@ -96,8 +72,19 @@ export default class FreeDraw extends Sprite {
     this.points.push([newX, newY])
   }
 
-  private drawALine(x0, y0, x1, y1, color = '#F00', width = 2): void {
+  private drawALine(x0, y0, x1, y1, color = 'rgba(0,0,0,0)', width = 2): void {
     this.graphics.drawLine(x0, y0, x1, y1, color, width)
+  }
+
+  private drawABezierCurve(x, y, beziers, lineColor, lineWidth = 2):void {
+
+    // [["moveTo",x,y],["lineTo",x,y,x,y,x,y],["arcTo",x1,y1,x2,y2,r],["closePath"]]
+    beziers = beziers.map(function(points) {
+      return ['bezierCurveTo', ...points.slice(2)]
+    })
+
+    console.log([['moveTo', x, y], ...beziers], lineColor, lineWidth)
+    this.graphics.drawPath(x, y, [['moveTo', x, y], ...beziers], {}, {strokeStyle: lineColor, lineWidth: 2})
   }
 
   private simplifyAndSendPath(points, level = 10): any {
@@ -112,9 +99,22 @@ export default class FreeDraw extends Sprite {
     console.log('原始点数', segmentCount)
     console.log('处理后点数', paperPath.segments.length)
     console.log('简化效果',  segmentCount - paperPath.segments.length, (segmentCount - paperPath.segments.length) / segmentCount * 100 + '%')
+    console.log(points, paperPath.segments)
 
+    var curves = paperPath.curves.map(function(curve, index) {
+      var points = []
+
+      curve.points.forEach(function(point, index) {
+        points.push(point.x, point.y)
+      })
+
+      return points
+    })
+
+    this.drawABezierCurve(curves[0][0], curves[0][1], curves, '#f00')
+    // console.log(curves)
     // MySocket
-    //   .instance(Model.socketUrl)
+    //   .getInstance(Model.getSocketUrl())
     //   .emit('board', JSON.stringify(paperPath.segments))
   }
 

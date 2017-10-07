@@ -5,9 +5,9 @@
 </template>
 
 <script>
-  import MyLaya from '@/components/MyLaya.vue'
-  import MySocket from '@/utils/Socket'
-  import Model from '@/board/Model'
+  import MyLaya from './components/MyLaya.vue'
+  import MySocket from '../common/Socket'
+  // import Model from './board/Model.ts'
 
   export default {
     name: 'app',
@@ -16,12 +16,14 @@
     },
     methods: {
       createSocket () {
-        Model.socketUrl = 'http://localhost:3000/'
+        console.log(Model)
+        // Model.socketUrl = 'http://localhost:3000/'
 
-        MySocket.instance(Model.socketUrl)
+        MySocket.getInstance(Model.socketUrl)
           .on('board', (data) => {
             console.log(data)
           })
+          .emit('board', JSON.stringify([12,343,343,5]))
       }
     },
     mounted () {

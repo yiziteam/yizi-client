@@ -4,22 +4,21 @@ var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
 var webpack = require('webpack')
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+function pathResolve (p) {
+  return path.join(__dirname, '..', p)
 }
 
-var lib = [
+var boardLib = [
   './static/lib/laya/laya.core.js',
   './static/lib/laya/laya.webgl.js',
-  './static/lib/laya/laya.ui.js',
-  // './node_modules/paper/dist/paper-full.js'
+  './static/lib/laya/laya.ui.js'
 ]
 
 module.exports = {
   entry: {
-    lib: lib,
-    main: './src/main.ts',
-    board: './src/board.ts'
+    'board_lib': boardLib,
+    board: pathResolve('./src/board/index.ts'),
+    classroom: pathResolve('./src/classroom/index.ts'),
   },
   output: {
     path: config.build.assetsRoot,
@@ -32,8 +31,8 @@ module.exports = {
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
-      '@img': resolve('src/assets/img')
+      '@': pathResolve('src'),
+      '@img': pathResolve('src/assets/img')
     }
   },
   externals: {
@@ -67,7 +66,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [pathResolve('src')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

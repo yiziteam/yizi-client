@@ -10,7 +10,7 @@ var lib = [
 		'./static/lib/laya/laya.core.js',
 		'./static/lib/laya/laya.webgl.js',
 		'./static/lib/laya/laya.ui.js',
-    './static/lib/paper-full.js'
+    // './static/lib/paper-full.js'
 	]
 
 module.exports = {

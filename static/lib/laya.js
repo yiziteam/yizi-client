@@ -5379,6 +5379,10 @@ var Laya=window.Laya=(function(window,document){
 						case "arcTo":
 							Render.isWebGL ? ctx.arcTo(path[1],path[2],path[3],path[4],path[5]):ctx.arcTo(x+path[1],y+path[2],x+path[3],y+path[4],path[5]);
 							break ;
+						//addedBy xiaohu 2017/10/07
+						case 'bezierCurveTo':
+						    Render.isWebGL ? ctx.bezierCurveTo(path[1],path[2],path[3],path[4],path[5],path[6]):ctx.arcTo(x+path[1],y+path[2],x+path[3],y+path[4],x+path[5],y+path[6]);
+							break ;
 						case "closePath":
 							ctx.closePath();
 							break ;

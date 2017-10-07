@@ -20,4 +20,8 @@ export default class Model {
 	static ratioY(y: number): number {
 		return y / Model.canvasHeight
 	}
+
+	static getSocketUrl(): string {
+		return Model.socketUrl
+	}
 }
