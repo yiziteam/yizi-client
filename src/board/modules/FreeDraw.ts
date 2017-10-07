@@ -69,7 +69,7 @@ export default class FreeDraw extends Sprite {
     }
 
     this.tempContainer.graphics.clear()
-    this.drawABezierCurve(curves[0][0], curves[0][1], curves, this.current.color)
+    this.drawABezierCurve(curves[0][0], curves[0][1], curves.slice(1), this.current.color)
     console.log(curves)
     // MySocket
     //   .getInstance(Model.getSocketUrl())
@@ -84,8 +84,9 @@ export default class FreeDraw extends Sprite {
 
     let newX = Model.relX(e.stageX)
     let newY = Model.relY(e.stageY)
-    var a = this.drawALine(this.current.x, this.current.y, newX, newY, this.current.color, 2)
-    console.log(a)
+    
+    this.drawALine(this.current.x, this.current.y, newX, newY, this.current.color, 2)
+
     this.current.x = newX
     this.current.y = newY
     this.points.push([newX, newY])
@@ -97,15 +98,16 @@ export default class FreeDraw extends Sprite {
 
   private drawABezierCurve(x, y, beziers, lineColor, lineWidth = 1):void {
     // [["moveTo",x,y],["lineTo",x,y,x,y,x,y],["arcTo",x1,y1,x2,y2,r],["closePath"]]
-    beziers = beziers.map(function(points) {
-      return ['bezierCurveTo'].concat(points.slice(2).map(function(p, index) {
+    beziers = beziers.map(function(points, index) {
+      return ['bezierCurveTo'].concat(points.map(function(p, index) {
          return index % 2 === 0 ? p - x : p - y
       }))
     })
+
     this.graphics.drawPath(x, y, [['moveTo', 0, 0], ...beziers], null, {strokeStyle: lineColor, lineWidth: 2})
   }
 
-  private simplifyLineByCurve(points, level = 10): any {
+  private simplifyLineByCurve(points: any[], level = 20): any {
     let paperPath = new Path({
       strokeColor: 'green',
       segments: points.slice(0)
@@ -117,10 +119,17 @@ export default class FreeDraw extends Sprite {
     // console.log('简化效果',  segmentCount - paperPath.segments.length, (segmentCount - paperPath.segments.length) / segmentCount * 100 + '%')
     // console.log(points, paperPath.segments)
 
-    return paperPath.curves.map(function(curve, index) {
-      return _flatMap(curve.points, function(point, index) {
+    return _flatMap(paperPath.curves, function(curve, index) {
+      var curves = _flatMap(curve.points, function(point, index) {
         return [_round(point.x, 1), _round(point.y, 1)]
       })
+
+      //精简数据
+      if (index === 0) {
+        return [curves.slice(0, 2), curves.slice(2)]
+      } else {
+        return [curves.slice(2)]
+      }
     })
   }
 
