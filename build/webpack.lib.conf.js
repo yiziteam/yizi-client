@@ -1,5 +1,5 @@
 var webpack = require('webpack')
-var config = require('../config')
+var config = require('./config')
 var path = require('path')
 
 function resolve (dir) {
