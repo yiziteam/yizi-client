@@ -1,38 +1,37 @@
 import * as $ from 'jquery'
 import {random, merge} from "lodash"
-import Sprite = Laya.Sprite
-import Stage = Laya.Stage
+import {Sprite, Stage}  from "Laya"
 import FreeDraw from './modules/FreeDraw'
-import Model from './modules/Model'
-import { setup as setupPaper, DomEvent as paperDomEvent } from 'paper'
+import Model from './modules/model'
+import paper from 'paper'
 import MySocket from '../common/Socket'
 
-interface PNode {
-  emit()
-}
-
 export default class Board {
-  private $box: any
-  private $layaContainer: any
-  private $layaCanvas: any
-  private $paperCanvas: any
-  public  $paperProject: any
-
-  private boxId: string
-  private canvasWidth: number
-  private canvasHeight: number
-
-  private container: Sprite
-  private freeDraw: FreeDraw
-
-  constructor(domId: string) {
-    this.initDom(domId)
-    this.initLayer()
-    this.initEvent()
-    this.initSocket()
+  constructor(domId) {
+    this._initVars()
+    this._initDom(domId)
+    this._initLayer()
+    this._initEvent()
+    this._initSocket()
   }
 
-  private initDom(boxId: string): void {
+  _initVars() {
+    //罗列属性
+    this.$box = null
+    this.$layaContainer = null
+    this.$layaCanvas = null
+    this.$paperCanvas = null
+    this.$paperProject = null
+
+    this.boxId = ''
+    this.canvasWidth = 0
+    this.canvasHeight = 0
+
+    this.container = null
+    this.freeDraw = null
+  }
+
+  _initDom(boxId) {
     this.boxId = boxId
     this.$box = document.querySelector(boxId)
     this.canvasWidth = this.$box.clientWidth
@@ -47,10 +46,10 @@ export default class Board {
     Model.canvasHeight = this.canvasHeight
     Model.canvasOffset = $(this.$box).offset()
 
-    this.initPaper()
+    this._initPaper()
   }
 
-  private initLayer():void {
+  _initLayer() {
     Laya.stage.setScreenSize(this.canvasWidth * 2, this.canvasHeight * 2)
 
     this.container = new Sprite()
@@ -67,7 +66,7 @@ export default class Board {
     this.container.addChild(this.freeDraw)
   }
 
-  private initPaper():void {
+  _initPaper() {
     // 使用paper.js工具前需先初始化容器
     this.$paperCanvas = document.createElement('canvas')
     this.$paperCanvas.id = 'paperCanvas'
@@ -78,13 +77,11 @@ export default class Board {
     this.$paperCanvas.style.left = 0
     this.$paperCanvas.style.pointerEvents = 'none'
     this.$paperCanvas.style.display = 'none'
-    this.copyLayaCavasStyle2PaperCanvas()
-
     this.$box.appendChild(this.$paperCanvas)
-    this.$paperProject = setupPaper(this.$paperCanvas.id)
+    this.$paperProject = paper.setup('paperCanvas')
   }
 
-  private initSocket():void {
+  _initSocket() {
     MySocket
       .getInstance('http://localhost:3000/')
       .emit('board_msg', {type: 'enterRoom'})
@@ -99,21 +96,21 @@ export default class Board {
       })
   }
 
-  private initEvent():void {
+  _initEvent() {
     Laya.stage.on("resize", this, this.onResize)
     this.container.on('board_sp', this, this.onSendMessage)
   }
 
-  private onResize():void {
-    this.copyLayaCavasStyle2PaperCanvas()
+  _onResize() {
+    this._copyLayaCavasStyle2PaperCanvas()
   }
 
-  private onSendMessage({name, data}):void {
+  _onSendMessage({name, data}) {
     MySocket
       .getInstance().emit('board_msg', {name, data})
   }
 
-  private onReceiveMessage({name, data}):void {
+  _onReceiveMessage({name, data}) {
     switch (name) {
       case 'bezierCurve':
         this.freeDraw.event('freeDraw_sp', {name, data})
@@ -126,7 +123,7 @@ export default class Board {
     }
   }
 
-  private copyLayaCavasStyle2PaperCanvas():void {
+  _copyLayaCavasStyle2PaperCanvas() {
     this.$paperCanvas.style.transformOrigin = this.$layaCanvas.style.transformOrigin
     this.$paperCanvas.style.transform = this.$layaCanvas.style.transform
   }

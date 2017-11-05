@@ -1,23 +1,23 @@
 <template>
   <div id="app">
-    <my-laya></my-laya>
+    <my-board></my-board>
   </div>
 </template>
 
 <script>
-  import MyLaya from './components/MyLaya.vue'
-  import MySocket from '../common/Socket'
-  // import Model from './board/Model.ts'
+  import MyBoard from './components/MyBoard.vue'
+  import MySocket from '@/common/Socket'
+  import Model from '@/board/modules/model'
 
   export default {
     name: 'app',
     components: {
-      MyLaya
+      MyBoard
     },
     methods: {
       createSocket () {
         console.log(Model)
-        // Model.socketUrl = 'http://localhost:3000/'
+        Model.canvasWidth = 1212
 
         MySocket.getInstance(Model.socketUrl)
           .on('board', (data) => {

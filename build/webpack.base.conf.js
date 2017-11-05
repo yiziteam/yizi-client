@@ -17,8 +17,8 @@ var boardLib = [
 module.exports = {
   entry: {
     'board_lib': boardLib,
-    board: pathResolve('./src/board/index.ts'),
-    classroom: pathResolve('./src/classroom/index.ts'),
+    board: pathResolve('./src/board/index.js'),
+    classroom: pathResolve('./src/classroom/index.js'),
   },
   output: {
     path: config.build.assetsRoot,
@@ -28,7 +28,7 @@ module.exports = {
       : config.dev.assetsPublicPath)
   },
   resolve: {
-    extensions: ['.ts', '.js', '.vue', '.json'],
+    extensions: [/*'.ts', */'.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': pathResolve('src'),
@@ -50,14 +50,14 @@ module.exports = {
       //     formatter: require('eslint-friendly-formatter')
       //   }
       // },
-      {
-        test: /\.ts$/,
-        exclude: /node_modules|vue\/src/,
-        loader: 'ts-loader',
-        options: {
-          appendTsSuffixTo: [/\.vue$/]
-        }
-      },
+      // {
+      //   test: /\.ts$/,
+      //   exclude: /node_modules|vue\/src/,
+      //   loader: 'ts-loader',
+      //   options: {
+      //     appendTsSuffixTo: [/\.vue$/]
+      //   }
+      // },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

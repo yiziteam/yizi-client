@@ -1,26 +1,27 @@
 <template>
-  <div class="laya-box" id="laya-box">
+  <div class="board-box" id="board-box">
+      <iframe src="./board.html" id="board" frameborder="0"></iframe>
   </div>
 </template>
 <script>
-  import Board from 'Board'
-
   export default {
-    name: 'laya',
+    name: 'board',
     data () {
       return {}
-    },
-    mounted () {
-      new Board('#laya-box')
     }
   }
 </script>
 
 <style scoped>
-  #laya-box {
+  #board-box {
     position: relative;
     margin: auto;
     width: 1000px;
     height: 750px;
+  }
+
+  #board {
+    width: 100%;
+    height: 100%;
   }
 </style>
