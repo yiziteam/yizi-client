@@ -5229,6 +5229,30 @@
 			this.lineTo(x,y,false);
 		}
 
+		//added by yangxiaohu 2017/11/05
+		__proto.bezierCurveTo=function(cpx1, cpy1, cpx2, cpy2, x, y) {
+			var tBezier=Bezier.I;
+			var tResultArray=[];
+			var _x1=x, _y1=y;
+
+			x=this._curMat.a *_x1+this._curMat.c *_y1;
+			y=this._curMat.b *_x1+this._curMat.d *_y1;
+
+			_x1=cpx2, _y1=cpy2;
+			cpx2=this._curMat.a *_x1+this._curMat.c *_y1;
+			cpy2=this._curMat.b *_x1+this._curMat.d *_y1;
+
+			_x1=cpx1, _y1=cpy1;
+			cpx1=this._curMat.a *_x1+this._curMat.c *_y1;
+			cpy1=this._curMat.b *_x1+this._curMat.d *_y1;
+
+		    var tArray=tBezier.getBezierPoints([this._path.getEndPointX(),this._path.getEndPointY(),cpx1,cpy1,cpx2,cpy2,x,y],30,3);
+			for (var i=0,n=tArray.length / 2;i < n;i++){
+				this.lineTo(tArray[i *2],tArray[i *2+1],false);
+			}
+			this.lineTo(x,y,false);
+		}
+
 		__proto.rect=function(x,y,width,height){
 			this._other=this._other.make();
 			this._other.path || (this._other.path=new Path());

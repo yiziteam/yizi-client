@@ -1,10 +1,11 @@
 import * as $ from 'jquery'
 import {random, merge} from "lodash"
-import {Sprite, Stage}  from "Laya"
+import {Sprite, Stage, WebGL}  from "Laya"
 import FreeDraw from './modules/FreeDraw'
 import Model from './modules/model'
 import paper from 'paper'
-import MySocket from '../common/Socket'
+import MySocket from '@/common/Socket'
+import {isSupportWebGL} from '@/common/util'
 
 export default class Board {
   constructor(domId) {
@@ -37,10 +38,17 @@ export default class Board {
     this.canvasWidth = this.$box.clientWidth
     this.canvasHeight = this.$box.clientHeight
 
-    Laya.init(this.canvasWidth, this.canvasHeight)
+    if (isSupportWebGL()) {
+      console.log('supportWebGL')
+      Laya.init(this.canvasWidth, this.canvasHeight, WebGL)
+    } else {
+      console.log('notSupportWebGL')
+      Laya.init(this.canvasWidth, this.canvasHeight)
+    }
+
     this.$layaContainer = document.querySelector('#layaContainer')
     this.$layaCanvas = document.querySelector('#layaCanvas')
-    this.$box.appendChild(this.$layaContainer)
+    this.$box.prepend(this.$layaContainer)
 
     Model.canvasWidth = this.canvasWidth
     Model.canvasHeight = this.canvasHeight
@@ -102,7 +110,7 @@ export default class Board {
   }
 
   _onResize() {
-    this._copyLayaCavasStyle2PaperCanvas()
+    // this._copyLayaCavasStyle2PaperCanvas()
   }
 
   _onSendMessage({name, data}) {

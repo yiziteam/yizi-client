@@ -64,7 +64,7 @@ export default class FreeDraw extends Sprite {
     this._drawABezierCurve(curves[0][0], curves[0][1], curves.slice(1), this.current.color)
     console.log(curves)
 
-    this.emitMessage('bezierCurve', curves)
+    this._emitMessage('bezierCurve', curves)
   }
 
   _onMouseMove(e) {
